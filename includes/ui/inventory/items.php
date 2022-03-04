@@ -150,8 +150,8 @@
 		}
 
 		function launchAppFunction(){
-    		var url = "https://app.nuzuka.com/wp_launch.html?oc=" + oc + "&pc=" + pc + "&uck=" + uck + "&fn=Services";
-    		window.open(url, "nuzuka_app");
+    		var url = "https://app.closebee.com/wp_launch.html?oc=" + oc + "&pc=" + pc + "&uck=" + uck + "&fn=Services";
+    		window.open(url, "closebee_app");
     		return false;
 		}
 	

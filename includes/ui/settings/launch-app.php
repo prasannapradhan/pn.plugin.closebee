@@ -41,21 +41,14 @@
     				</script>
     				<ul class="w-100 ml-3" style="font-size: 15px !important;list-style-type: square;">
                       <li class="p-1">You can find all your site pages in 
-                      	<a href="#" onclick="return submitNavigationForm('nuzuka-plugin-page-site')"><b>Pages</b></a> page.
+                      	<a href="#" onclick="return submitNavigationForm('closebee-plugin-page-site')"><b>Pages</b></a> page.
                       </li>
-                      <li class="p-1">The operational dashboard can be found in 
-                      	<a href="#" onclick="return submitNavigationForm('nuzuka-plugin-page-dashboard')"><b>Dashboard</b></a> page.
-                      </li>
-                      <li class="p-1">Site visitors can be found in 
-                      	<a href="#" onclick="return submitNavigationForm('nuzuka-plugin-page-visitors')"><b>Visitors</b></a> page.
-                      </li>
-                      <li class="p-1">Advanced features like Widget Creation, Inventory Declaration, Enquiry Operations, Customer management, Multisite Monitoriing 
-                      		and much more are found in the <a href="#" onclick="return launchApp();"><b>Nuzuka App</b></a>
+                      <li class="p-1">Advanced features, change operations and much more are found in the <a href="#" onclick="return launchApp();"><b>Closebee App</b></a>
                       </li>
                       <li class="p-1">To raise a support issue at <a href="https://support.pearnode.com" 
                       	target="pearnode_support"><b>Support Portal</b></a> or mail us <b style="color:grey;">support@pearnode.com</b></li>
                     </ul>
-                    <input type='hidden' name='action' value='nuzuka_navigation_form' />
+                    <input type='hidden' name='action' value='closebee_navigation_form' />
                 </form>
 			</div>
 		</div>

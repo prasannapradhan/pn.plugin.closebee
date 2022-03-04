@@ -265,7 +265,7 @@
     }
     
     function closebee_do_admin_init(){
-		add_menu_page('Nuzuka', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
+		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
 		add_submenu_page('closebee-plugin-settings', 'Closebee Settings', 'Settings', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings');
 		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Site Pages', 'Pages', 'manage_options', 'closebee-plugin-page-site', 'closebee_plugin_page_site');
 		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Inventory', 'Catalog', 'manage_options', 'closebee-plugin-page-inventory', 'closebee_plugin_page_inventory');

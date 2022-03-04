@@ -46,7 +46,7 @@
 				<div class="card-footer">
 					<div class="row d-flex justify-content-center">
 						<button class="btn btn-sm btn-light" onclick="return enableWidget({{site_ref}}, {{id}});"
-							data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Enable / Disable Nuzuka widget">
+							data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Enable / Disable Closebee widget">
 							<img src="<?php echo plugins_url()."/".$plugin_dir_name."/includes/assets/"; ?>images/z.png" style="max-width:1.4vw;max-height:2.0vh;"/>
 						</button>
 						<button class="btn btn-sm btn-light" onclick="return inactivatePage({{id}})"
@@ -401,8 +401,8 @@
 		}
 
 		function launchAppFunction(){
-    		var url = "https://app.nuzuka.com/wp_launch.html?oc=" + oc + "&pc=" + pc + "&uck=" + uck + "&fn=Sites";
-    		window.open(url, "nuzuka_app");
+    		var url = "https://app.closebee.com/wp_launch.html?oc=" + oc + "&pc=" + pc + "&uck=" + uck + "&fn=Sites";
+    		window.open(url, "closebee_app");
     		return false;
 		}
 	</script>
@@ -480,7 +480,7 @@
 		  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header bg-light">
-		        <h5 class="modal-title">Nuzuka update <span id="modal_page_url"></span></h5>
+		        <h5 class="modal-title">Closebee update <span id="modal_page_url"></span></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>

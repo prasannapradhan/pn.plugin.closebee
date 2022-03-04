@@ -17,12 +17,12 @@
                   <li class="p-1"><b>First Step</b> is to register your site with 
                   	<a class="link link-primary" href="https://app.closebee.com/wp_register.html" target="_nzkwpregister">Closebee Registrar</a>.
                   </li>
-                  <li class="p-1"><b><a href="https://app.closebee.com/wp_register.html" target="nuzuka_site">Closebee</a></b> 
+                  <li class="p-1"><b><a href="https://app.closebee.com/wp_register.html" target="closebee_site">Closebee</a></b> 
                   	Closebee is the ecommerce tailor which stiches ecommerce, marketplace, enquiry capture, inventory management, 
                   	warehouse management, shipping, billing and accounting through your website.
                   </li>
                   <li class="p-1">It takes <b>less than a minute</b> to register your business and integrate</li>
-                  <li class="p-1"><b><a href="https://nuzuka.com" target="nuzuka_site">Closebee</a></b> is currently in Beta and all 
+                  <li class="p-1"><b><a href="https://closebee.com" target="closebee_site">Closebee</a></b> is currently in Beta and all 
                   	registrations are <b>FREE for life</b></li>
                   <li class="p-1">For any queries you can mail us <b>connect@closebee.com</b>, and for support <b>support@pearnode.com</b></li>
                 </ul>
@@ -33,7 +33,7 @@
 		    <textarea rows="4" class="form-control" id="authtoken" name="authtoken" required="required"></textarea>
 	    	<small id="authtokenhelp" class="form-text text-muted">Enter the post registration authorization token here</small>
 		</div>
-		<input type='hidden' name='action' value='nuzuka_registration_form' />
+		<input type='hidden' name='action' value='closebee_registration_form' />
 	</div>
 	<div class="card-footer w-100">
 		<button class="btn btn-primary w-100" type="submit">

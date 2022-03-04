@@ -16,7 +16,7 @@ More than 20 million sites using contact forms but a very little effort has been
 Contact forms for an enquiry usually take more than a minute to fill. They are error prone, spam prone and repetative.
 The customer focuses more time in correctly entering his personal information rather than entering info about the service he really wants.
 
-[Closebee](https://nuzuka.com) is the answer to these millions of deployments to reduce the customer interaction time to seconds while gathering 10X more information about the customer.
+[Closebee](https://closebee.com) is the answer to these millions of deployments to reduce the customer interaction time to seconds while gathering 10X more information about the customer.
 
 1. Closebee makes sure your customer focuses on the requirement rather than filling their personal information.
 1. Closebee contains a enquiry CRM which nurtures every enquiry that is captured.
@@ -52,7 +52,7 @@ Closebee is global. It will work the same for different countries and time zones
 
 = Where can I find Closebee documentation and user guides? =
 
-For help setting up and configuring Closebee, please refer to [Getting Started](https://nuzuka.com/text-guide/) and the [Video Guide](https://nuzuka.com/video-guide/).
+For help setting up and configuring Closebee, please refer to [Getting Started](https://closebee.com/text-guide/) and the [Video Guide](https://closebee.com/video-guide/).
 
 = Will Closebee work with my theme? =
 

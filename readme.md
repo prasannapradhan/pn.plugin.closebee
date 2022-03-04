@@ -1,7 +1,7 @@
-# Nuzuka Enquiry Capture
+# Closebee Enquiry Capture
 
 **Contributors:** pradhp \
-**Tags:** enquiry, capture, spam, crm, contact form, inventory, woocommerce bulk enquiry, nuzuka, site monitor, lead, site manager  \
+**Tags:** enquiry, capture, spam, crm, contact form, inventory, woocommerce bulk enquiry, closebee, site monitor, lead, site manager  \
 **Requires at least:** 5.6 \
 **Tested up to:** 5.9 \
 **Requires PHP:** 7.0 \
@@ -9,7 +9,7 @@
 **License:** GPLv3 \
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
-Nuzuka is the most powerful website enquiry capture system. Quick, painless, spam proof contact form widgets which ask less and get a lot more.
+Closebee is the most powerful website enquiry capture system. Quick, painless, spam proof contact form widgets which ask less and get a lot more.
 
 ## Description
 
@@ -17,14 +17,14 @@ More than 20 million sites using contact forms but a very little effort has been
 Contact forms for an enquiry usually take more than a minute to fill. They are error prone, spam prone and repetative.
 The customer focuses more time in correctly entering his personal information rather than entering info about the service he really wants.
 
-[Nuzuka](https://nuzuka.com) is the answer to these millions of deployments to reduce the customer interaction time to seconds while gathering 10X more information about the customer.
+[Closebee](https://closebee.com) is the answer to these millions of deployments to reduce the customer interaction time to seconds while gathering 10X more information about the customer.
 
-1. Nuzuka makes sure your customer focuses on the requirement rather than filling their personal information.
-1. Nuzuka contains a enquiry CRM which nurtures every enquiry that is captured.
-1. Nuzuka notifies you and your customer of the enquiry and sets up a conversation channel to talk to your customer.
-1. Nuzuka Site Manager monitors customer navigation to site sections, items and captures customer intentions. 
-1. Nuzuka utilizes advanced AI and Prediction techniques to predict your enquiry conversion probability. 
-1. Nuzuka is pure SAAS and REST so its footprint on your site functions are barely minimal.
+1. Closebee makes sure your customer focuses on the requirement rather than filling their personal information.
+1. Closebee contains a enquiry CRM which nurtures every enquiry that is captured.
+1. Closebee notifies you and your customer of the enquiry and sets up a conversation channel to talk to your customer.
+1. Closebee Site Manager monitors customer navigation to site sections, items and captures customer intentions. 
+1. Closebee utilizes advanced AI and Prediction techniques to predict your enquiry conversion probability. 
+1. Closebee is pure SAAS and REST so its footprint on your site functions are barely minimal.
 
 ## Screenshots
 
@@ -39,43 +39,43 @@ The customer focuses more time in correctly entering his personal information ra
 * Customer CRM. Captures and manages your customer forever. Once a customer forever your customer.
 * Visually delightful and dynamic. Content can be changed from app no site modification required.
 
-### Why Nuzuka will work in your site
+### Why Closebee will work in your site
 
-Nuzuka is driven by a restful APP which shares all the load externally. 
-Whatever may be the issues at your hosting level Nuzuka will never stop serving your site.
+Closebee is driven by a restful APP which shares all the load externally. 
+Whatever may be the issues at your hosting level Closebee will never stop serving your site.
 The core platform is tested rigorously and supported by a dedicated development team.
 
 ### Be part of our growing international community
 
-Nuzuka is global. It will work the same for different countries and time zones. Currently the default language is "English"
+Closebee is global. It will work the same for different countries and time zones. Currently the default language is "English"
 
 ## Frequently Asked Questions
 
-### Where can I find Nuzuka documentation and user guides?
+### Where can I find Closebee documentation and user guides?
 
-For help setting up and configuring Nuzuka, please refer to [Getting Started](https://nuzuka.com/text-guide/) and the [Video Guide](https://nuzuka.com/video-guide/).
+For help setting up and configuring Closebee, please refer to [Getting Started](https://closebee.com/text-guide/) and the [Video Guide](https://closebee.com/video-guide/).
 
-### Will Nuzuka work with my theme?
+### Will Closebee work with my theme?
 
-Yes! Nuzuka will work with any theme.
+Yes! Closebee will work with any theme.
 
-### How do I update Nuzuka?
+### How do I update Closebee?
 
 Currently update is automatic via Wordpress.
 
 ### My site broke – what do I do?
 
-Nuzuka does not do any major site modifications but still if you feel that Nuzuka has broken functionality then please free to shoot us an email at support@pearnode.com 
+Closebee does not do any major site modifications but still if you feel that Closebee has broken functionality then please free to shoot us an email at support@pearnode.com 
 
 ### Where can I report bugs?
 
-Nuzuka is supported by Pearnode support. You can directly open the [support portal](https://support.pearnode.com) to report issues or you can send a mail to support@pearnode.com
+Closebee is supported by Pearnode support. You can directly open the [support portal](https://support.pearnode.com) to report issues or you can send a mail to support@pearnode.com
 
 ### Where can I request new features, themes, and extensions?
 
 Please create a support ticket in our [support portal](https://support.pearnode.com)
 
-### Nuzuka is awesome! Can I contribute?
+### Closebee is awesome! Can I contribute?
 
 Not yet but you can use our REST API's to integrate your site data with your other systems.
 
@@ -89,17 +89,17 @@ Please create a support request in our [support portal](https://support.pearnode
 
 ## Installation
 
-There is no specific server requirements. Nuzuka should work with your site as is. 
+There is no specific server requirements. Closebee should work with your site as is. 
 
 ### Automatic installation
 
-Automatic installation is the easiest option -- WordPress will handle the file transfer, and you won’t need to leave your web browser. To do an automatic install of Nuzuka, log in to your WordPress dashboard, navigate to the Plugins menu, and click “Add New.”
+Automatic installation is the easiest option -- WordPress will handle the file transfer, and you won’t need to leave your web browser. To do an automatic install of Closebee, log in to your WordPress dashboard, navigate to the Plugins menu, and click “Add New.”
  
-In the search field type “Nuzuka,” then click “Search Plugins.” Once you’ve found us,  you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it by! Click “Install Now,” and WordPress will take it from there.
+In the search field type “Closebee,” then click “Search Plugins.” Once you’ve found us,  you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it by! Click “Install Now,” and WordPress will take it from there.
 
 ### Manual installation
 
-Manual installation method requires downloading the Nuzuka Wordpress plugin and uploading it to your web server via your favorite FTP application. The WordPress codex contains [instructions on how to do this here](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
+Manual installation method requires downloading the Closebee Wordpress plugin and uploading it to your web server via your favorite FTP application. The WordPress codex contains [instructions on how to do this here](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
 
 ### Updating
 
@@ -111,7 +111,7 @@ Automatic updates should work smoothly, but we still recommend you back up your 
 
 ### 1.0.0.0 2022-02-28
 
-**Nuzuka Wordpress Plugin**
+**Closebee Wordpress Plugin**
 
 * App integration of Customer Module
 * App integration of Visitor Module

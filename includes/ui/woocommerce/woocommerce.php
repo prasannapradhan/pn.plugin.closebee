@@ -45,7 +45,7 @@
 						    	$('#post_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
 						    	var postUrl = "https://api.pearnode.com/closebee/site/scan/woocommerce_update.php"; 
 						    	 $.post(postUrl, JSON.stringify(pdata), function(data) {
-			 					    submitNavigationForm('nuzuka-plugin-page-site');
+			 					    submitNavigationForm('closebee-plugin-page-site');
 						    	 });
 					    	}else {
 					    		$('#post_scan_result').html("Error in scanning : <b style='color:red;'>" + pgstatus.code + "</b>");
@@ -74,7 +74,7 @@
 	<body style="overflow-x:hidden;">
 		<div class="row w-100 m-0 p-2">
         	<div class="card-header bg-light w-100 mt-2" style="font-weight: bold;">
-        		Integrate Woocommerce with Nuzuka to create enquiries on Products
+        		Integrate Woocommerce with Closebee to manage orders in the backend
         	</div>
         	<div class="card-body w-100 p-1 mt-1">
         		<div class="row w-100 m-0 mb-2 mt-1">
@@ -85,12 +85,12 @@
         			</div>
         			<div class="col-7">
         				<ul class="w-100 ml-4" style="font-size: 15px !important;list-style-type: square;">
-                          <li class="p-1" style="text-decoration:underline;">Steps to configure Woocommerce with Nuzuka</li>
+                          <li class="p-1" style="text-decoration:underline;">Steps to configure Woocommerce with Closebee</li>
                           <li>
                               <ol>
                                   <li class="p-1">Goto Menu > Woocommerce > Settings > Advanced > REST API</li>
                                   <li class="p-1">Click on the Add key button</li>
-                                  <li class="p-1">Enter description as "Nuzuka Woocommerce"</li>
+                                  <li class="p-1">Enter description as "Closebee Woocommerce"</li>
                                   <li class="p-1">Change Permission to "Read / Write"</li>
                                   <li class="p-1">Click on "Generate API Key" button</li>
                                   <li class="p-1">Copy the "Consumer Key" and "Consumer Secret" paste it below</li>
