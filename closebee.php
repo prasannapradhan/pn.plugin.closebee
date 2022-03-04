@@ -143,7 +143,7 @@
             $ddata = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $token)[1]))));
             $rdata = array('oc' => $ddata->oc, 'pc' => $ddata->pc, 'uck' => $ddata->uck);
             $post_args['body'] = json_encode($rdata);
-            $out = wp_remote_post('https://api.pearnode.com/closebee/site/plugin/bizdetails.php', $post_args);
+            $out = wp_remote_post('https://api.pearnode.com/extn/org/bizdetails.php', $post_args);
             $robj = (object) $out;
             file_put_contents($cred_file, $robj->body);
             exit(wp_redirect('admin.php?page=closebee-plugin-settings'));
