@@ -34,7 +34,7 @@
     	var pid = '<?php echo esc_attr($profile->id); ?>';
     	var uid = '<?php echo esc_attr($user->id); ?>';
     	var uck = '<?php echo esc_attr($user->ck); ?>';
-		var processing_img = '<?php echo WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"; ?>images/ajax-loader.gif';
+		var processing_img = '<?php echo plugins_url()."/".$plugin_dir_name."/includes/assets/"; ?>images/ajax-loader.gif';
     	var grp_search_options = {list: { match: {enabled: true}, maxNumberOfElements: 10 }, placeholder: "Search..", theme: "blue"};
 		var momObj;
 		var allgroup = {id : -1, name : 'All Groups', code : 'all'};
@@ -169,7 +169,7 @@
 	    <div class="col-2 d-flex" style="padding-left: 5px;padding-right: 5px;">
 			<input type="text" class="form-control" id="one_search" placeholder="Search..." onfocus="this.select();">
 			<button class="btn btn-sm btn-outline-primary" style="margin-left: 2px;"  onclick="return searchItems();">
-				<img src="<?php echo WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"; ?>images/search.png" 
+				<img src="<?php echo plugins_url()."/".$plugin_dir_name."/includes/assets/"; ?>images/search.png" 
 					style="width:14px;height:14px;vertical-align:middle !important;"/>	
 			</button>
 		</div>

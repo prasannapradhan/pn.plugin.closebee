@@ -30,14 +30,14 @@
 				$('#modal_site_name').text(sname);
 				$('#scan_modal').modal('show');
 				var postUrl = "https://api.pearnode.com/closebee/site/scan/page_open.php"; 
-				$('#page_scan_result').html('<img src="<?php echo esc_attr(WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"); ?>images//ajax/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+				$('#page_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 			    $.post(postUrl, JSON.stringify(pdata), function(data) {
 			    	var robj = $.parseJSON(data);
 			    	var pgstatus = robj.status;
 			    	if(pgstatus.status == "success"){
 				    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
 				    	postUrl = "https://api.pearnode.com/closebee/site/scan/post_open.php"; 
-						$('#post_scan_result').html('<img src="<?php echo esc_attr(WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"); ?>images//ajax/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+						$('#post_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 					    $.post(postUrl, JSON.stringify(pdata), function(data) {
 					    	var robj = $.parseJSON(data);
 					    	var psstatus = robj.status;
@@ -79,7 +79,7 @@
         	<div class="card-body w-100 p-1 mt-1">
         		<div class="row w-100 m-0 mb-2 mt-1">
         			<div class="col-5 p-0">
-        				<img src="<?php echo esc_attr(WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"); ?>images/woocommerce.png" 
+        				<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/woocommerce.png" 
         					class="shadow shadow-sm rounded w-100" 
         					style="height: 40vh;border-radius: 16px; "/>
         			</div>

@@ -4,14 +4,14 @@
 		$('#scan_modal').modal('show');
     	var pdata = {'oc': oc,'pc': pc, 'sid' : sid};
 		var postUrl = "https://api.pearnode.com/nuzuka/site/scan/page_open.php"; 
-		$('#page_scan_result').html('<img src="<?php echo esc_attr(WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"); ?>images//ajax/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+		$('#page_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 	    $.post(postUrl, JSON.stringify(pdata), function(data) {
 	    	var robj = $.parseJSON(data);
 	    	var pgstatus = robj.status;
 	    	if(pgstatus.status == "success"){
 		    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
 		    	postUrl = "https://api.pearnode.com/nuzuka/site/scan/post_open.php"; 
-				$('#post_scan_result').html('<img src="<?php echo esc_attr(WP_PLUGIN_URL."/".$plugin_dir_name."/includes/assets/"); ?>images//ajax/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+				$('#post_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 			    $.post(postUrl, JSON.stringify(pdata), function(data) {
 			    	var robj = $.parseJSON(data);
 			    	var psstatus = robj.status;
