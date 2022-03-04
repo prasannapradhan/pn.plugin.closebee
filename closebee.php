@@ -67,6 +67,54 @@
     function closebee_plugin_deactivate(){
         ClosebeePluginDeactivator::deactivate(get_site_url());
     }
+ 
+    function closebee_footer_append() {
+        global $post_args;
+        global $wp_query;
+        $pgid = $wp_query->get_queried_object_id();
+        if($pgid){
+            $surl = get_site_url();
+            $rdata = array('surl' => $surl, 'pglink' => $pgid);
+            $post_args['body'] = json_encode($rdata);
+            $out = wp_remote_post('https://api.pearnode.com/closebee/site/plugin/widget_html_page.php', $post_args);
+            $robj = (object) $out;
+            $body = $robj->body;
+            if($body != ""){
+                echo $body;
+            }
+        }
+    }
+    
+    function closebee_parse_content($content){
+        global $post_args;
+        $sc = 'cbwidget';
+        $matches = array();
+        preg_match_all("/\[$sc(.+?)?\]/i", $content, $matches);
+        if(sizeof($matches) > 0){
+            $mbox = $matches[0];
+            foreach($mbox as $m){
+                $mx = str_replace("&#8221;", "\"", $m);
+                $mx = str_replace("&#8243;", "\"", $mx);
+                $mx = str_replace("&#8216;", "\"", $mx);
+                $mx = str_replace("&#8217;", "\"", $mx);
+                $widarr = array();
+                if (preg_match('/"([^"]+)"/', $mx, $widarr)) {
+                    $wid = $widarr[1];
+                    if($wid != "none"){
+                        $rdata = array('wid' => $wid);
+                        $post_args['body'] = json_encode($rdata);
+                        $out = wp_remote_post('https://api.pearnode.com/closebee/site/plugin/widget_html_id.php', $post_args);
+                        $robj = (object) $out;
+                        $body = $robj->body;
+                        if($body != ""){
+                            $content = str_replace($m, $body, $content);
+                        }
+                    }
+                }
+            }
+        }
+        return $content;
+    }
     
     function closebee_plugin_settings() {
         global $post_args, $plugin_dir, $plugin_dir_name;
