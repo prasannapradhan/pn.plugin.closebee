@@ -1,0 +1,9 @@
+{
+	"name" : "wp-api/nuzuka-lgs",
+	"description" : "Nuzuka lead generation system",
+	"type" : "wordpress-plugin",
+	"homepage" : "https://nuzuka.com",
+	"support" : {
+		"email" : "connect@nuzuka.com"
+	}
+}
