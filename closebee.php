@@ -317,7 +317,7 @@
 		add_submenu_page('closebee-plugin-settings', 'Closebee Settings', 'Settings', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings');
 		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Site Pages', 'Pages', 'manage_options', 'closebee-plugin-page-site', 'closebee_plugin_page_site');
 		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Inventory', 'Catalog', 'manage_options', 'closebee-plugin-page-inventory', 'closebee_plugin_page_inventory');
-		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Woocommerce', 'Woocommerce', 'manage_options', 'closebee-plugin-page-woocommerce', 'closebee_plugin_page_woocommerce');
+		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Woocommerce', 'Woo Config', 'manage_options', 'closebee-plugin-page-woocommerce', 'closebee_plugin_page_woocommerce');
 		if (get_option('my_plugin_do_activation_redirect', false)) {
 		    delete_option('my_plugin_do_activation_redirect');
 		    wp_redirect('admin.php?page=closebee-plugin-settings');
