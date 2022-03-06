@@ -311,6 +311,61 @@
             exit(wp_redirect('admin.php?page=closebee-plugin-settings'));
         }
     }
+
+    function action_woocommerce_init($params){
+        global $org, $profile;
+        add_action('woocommerce_before_add_to_cart_button' , 'closebee_before_add_to_cart_button', 5);
+        add_filter('woocommerce_add_cart_item_data', 'closebee_add_cart_item_data', 10, 3 );
+        add_filter('woocommerce_get_item_data', 'closebee_get_item_data', 10, 2 );
+    }
+    
+    function closebee_before_add_to_cart_button(){
+        $meta = (object) get_post_meta(get_the_ID());
+        if(isset($meta->sons)){
+            $sons = $meta->sons;
+            $soids = $meta->soids;
+            $buff = "<div class='row w-100 m-0' style='margin-bottom:5px;margin-left:5px;'> Sold by :";
+            if(sizeof($sons) > 1){
+                $sel = "<select id='seller_select' name='seller_select' class='form-control w-100'>";
+                foreach ($sons as $key => $son) {
+                    $sel .= "<option value='".$soids[$key]."'>".$son."</option>";
+                }
+                $sel .= "</select>";
+                $buff .= $sel;
+            }else {
+                $buff .="<b><span style='margin-left:5px;'>".$sons[0]."<span>";
+                $buff .="<input type='hidden' id='seller_select' name='seller_select' value='".$soids[0]."'/></b>";
+            }
+            $buff .= "</div>";
+            echo $buff;
+        }
+    }
+    
+    function closebee_add_cart_item_data($cart_item_data, $product_id, $variation_id ) {
+        if(!empty($_POST['seller_select'])) {
+            $ss = $_POST['seller_select'];
+            $cart_item_data['soid'] = $ss;
+        }
+        return $cart_item_data;
+    }
+    
+    function closebee_get_item_data($item_data, $cart_item_data) {
+        global $org, $profile;
+        if(isset($cart_item_data['soid'])){
+            $soid = $cart_item_data['soid'];
+            $rdata = array('soid' => $soid);
+            $post_args['body'] = json_encode($rdata);
+            $out = wp_remote_post('https://api.pearnode.com/closebee/seller/details.php', $post_args);
+            $robj = (object) $out;
+            $body = $robj->body;
+            $seller = json_decode($body);
+            $item_data[] = array(
+                'key' => __( 'Seller', 'closebee-seller' ),
+                'value' => wc_clean($seller->org->name)
+            );
+        }
+        return $item_data;
+    }
     
     function closebee_do_admin_init(){
 		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
@@ -369,6 +424,7 @@
     add_action('admin_menu', 'closebee_do_admin_init');
     add_action('admin_post_closebee_registration_form', 'handle_submit_closebee_registration_form');
     add_action('admin_post_closebee_navigation_form', 'handle_submit_closebee_navigation_form');
+    add_action('woocommerce_init', 'action_woocommerce_init', 10, 1 ); 
     
     add_action('in_admin_header', function () {
         remove_all_actions('admin_notices');
