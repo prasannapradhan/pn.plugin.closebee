@@ -321,6 +321,8 @@
         add_action('woocommerce_before_checkout_form', 'closebee_before_checkout_form', 10, 1);
         add_filter('woocommerce_checkout_coupon_message', 'closebee_checkout_coupon_message', 20, 1);
         add_filter('woocommerce_checkout_get_value', 'closebee_checkout_get_value');
+        add_filter('woocommerce_checkout_fields', 'closebee_checkout_fields');
+        add_filter('woocommerce_enable_order_notes_field', '__return_false', 9999);
     }
     
     function closebee_before_add_to_cart_button(){
@@ -372,10 +374,10 @@
     }
     
     function closebee_checkout_coupon_message($notice) {
-        return "<a href='#' onclick='return openUserAddressWidget();'>Autofill your details</a>";
+        return "<a href='#' id='autofill_address'>Autofill your details</a>";
     }; 
     
-    function closebee_checkout_get_value($input, $key){
+    function closebee_checkout_get_value($key){
         global $current_user;
         switch ($key) :
             case 'billing_first_name':
@@ -407,6 +409,16 @@
             error_log("User id is not set. Ignoring");
         }
     }; 
+    
+    function closebee_checkout_fields($fields) {
+        // Billing fields
+        unset($fields['billing']['billing_company']);
+        // Shipping fields
+        unset($fields['shipping']['shipping_company']);
+        // Order fields
+        unset( $fields['order']['order_comments'] );
+        return $fields;
+    }
     
     function closebee_do_admin_init(){
 		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
