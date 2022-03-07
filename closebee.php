@@ -314,9 +314,13 @@
 
     function action_woocommerce_init($params){
         global $org, $profile;
+        add_action('wp_enqueue_scripts', "load_widget_dependencies");
         add_action('woocommerce_before_add_to_cart_button' , 'closebee_before_add_to_cart_button', 5);
         add_filter('woocommerce_add_cart_item_data', 'closebee_add_cart_item_data', 10, 3 );
         add_filter('woocommerce_get_item_data', 'closebee_get_item_data', 10, 2 );
+        add_action('woocommerce_before_checkout_form', 'closebee_before_checkout_form', 10, 1);
+        add_filter('woocommerce_checkout_coupon_message', 'closebee_checkout_coupon_message', 20, 1);
+        add_filter('woocommerce_checkout_get_value', 'closebee_checkout_get_value');
     }
     
     function closebee_before_add_to_cart_button(){
@@ -367,6 +371,43 @@
         return $item_data;
     }
     
+    function closebee_checkout_coupon_message($notice) {
+        return "<a href='#' onclick='return openUserAddressWidget();'>Autofill your details</a>";
+    }; 
+    
+    function closebee_checkout_get_value($input, $key){
+        global $current_user;
+        switch ($key) :
+            case 'billing_first_name':
+            case 'shipping_first_name':
+                return $current_user->first_name;
+                break;
+            
+            case 'billing_last_name':
+            case 'shipping_last_name':
+                return $current_user->last_name;
+                break;
+            
+            case 'billing_email':
+                return $current_user->user_email;
+                break;
+            
+            case 'billing_phone':
+                return $current_user->phone;
+                break;
+        endswitch;
+    }
+    
+    function closebee_before_checkout_form($wccm_autocreate_account) {
+        error_log("Before checkout [".json_encode($wccm_autocreate_account)."]");
+        if(isset($_GET['uid'])){
+            $uid = $_GET['uid'];
+            error_log("User id is set to [$uid]. Load it from API");
+        }else {
+            error_log("User id is not set. Ignoring");
+        }
+    }; 
+    
     function closebee_do_admin_init(){
 		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
 		add_submenu_page('closebee-plugin-settings', 'Closebee Settings', 'Settings', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings');
@@ -412,6 +453,10 @@
         wp_enqueue_script('closebee-utils', plugins_url('includes/assets/js/pearnode-commons-util.js', __FILE__));
         wp_enqueue_script('closebee-cbifunctions', plugins_url('includes/assets/js/pearnode-commons-cb-inventory-functions.js', __FILE__));
         wp_enqueue_script('closebee-dtcontrols', plugins_url('includes/assets/js/pearnode-datecontrols.js', __FILE__));
+    }
+    
+    function load_widget_dependencies(){
+        wp_enqueue_script('closebee-widget-handler', plugins_url('includes/assets/js/handler.js', __FILE__));
     }
     
     register_activation_hook( __FILE__, 'closebee_plugin_activate' );
