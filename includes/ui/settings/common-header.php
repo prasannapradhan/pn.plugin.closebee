@@ -1,6 +1,14 @@
 <html>
 	<head>
 		<?php wp_head(); ?>
+		<style type="text/css">
+		  html {
+		      margin-top: 0px !important;
+		  }
+		  .wp-submenu {
+		      margin-left: 0px !important;
+		  }
+		</style>
 	</head>
 	<body style="">
 		<div class="modal fade" id="scan_modal" tabindex="-1" role="dialog" aria-hidden="true">

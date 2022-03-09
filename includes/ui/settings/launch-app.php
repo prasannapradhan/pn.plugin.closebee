@@ -14,7 +14,7 @@
             			<span>We recommend you use our app for using all the features.</span>
             		</div>
             		<div class="row w-100 m-0 mt-3">
-	            		<button class="btn btn-primary w-75" onclick="return launchApp();">Launch App</button>
+	            		<button class="btn btn-primary w-25" onclick="return launchApp();">Launch App</button>
             		</div>
             	</div>
 			</div>
