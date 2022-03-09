@@ -52,9 +52,9 @@ function openUserAddressWidget() {
 		var fhtml = '<iframe class="cb_address_widget_frame" id="cb_user_address_frame" ' 
 		+'allow="geolocation" src="https://app.closebee.com/view/widget/_user.html" style="border: 4px solid grey;border-radius:8px;"></iframe>';
 		
-		jQuery('body').append(fhtml);
+		jQuery('body').first().append(fhtml);
 		jQuery('#cb_user_address_frame').css('height', fh + 'px');
-		jQuery('#cb_user_address_frame').css('z-index:', maxz);
+		jQuery('#cb_user_address_frame').css('z-index', maxz);
 		jQuery('#cb_user_address_frame').css('width', fw + 'px');
 		jQuery('#cb_user_address_frame').css('top', rh + 'px');
 		jQuery('#cb_user_address_frame').css('left', rw + 'px');
@@ -101,25 +101,44 @@ function loadUserDetails(){
 	}
 }
 
-function triggerInfoSubmit(uid, uadid){
-	var append = "";
-	if(typeof uid != "undefined"){
-		append += "?uid=" + uid;
-		if(typeof uadid != "undefined"){
-			append += "&udaid=" + udaid;
+function triggerInfoSubmit(uck, uadc){
+	var url = new URL(site_url);
+	if(typeof uck != "undefined"){
+		if(url.searchParams.get('uck') === null){
+			url.searchParams.append('uck', uck);
+		}else {
+			url.searchParams.set('uck', uck);
 		}
-		site_url += append;		
+		if(typeof uadc != "undefined"){
+			if(url.searchParams.get('uadc') === null){
+				url.searchParams.append('uadc', uadc);
+			}else {
+				url.searchParams.set('uadc', uadc);
+			}
+		}
 	}
-	window.location.href = site_url;
-	jQuery('#cb_user_address_frame_container').hide();
+	window.location.href = url;
+	jQuery('#cb_user_address_frame_container').fadeOut(500);
 }
 
 window.addEventListener('message', function(event) {
     if(event.data.evt_id === 'widget_loaded'){
-    	var mdata = event.data;
     }else if(event.data.evt_id === 'redirect_sigin'){
     	 window.postMessage(event.data, "*");
     }else if(event.data.evt_id === 'close_widget'){
-		triggerInfoSubmit();
+		if(typeof event.data != "undefined"){
+	    	var mdata = event.data;		
+			if(typeof mdata.data != "undefined"){
+				var uck = mdata.data.uck;
+				if(typeof mdata.data.uadc != "undefined"){
+					var uadc = mdata.data.uadc;
+	    			triggerInfoSubmit(uck, uadc);
+				}else {
+					triggerInfoSubmit(uck);
+				}
+			}
+		}else {
+			triggerInfoSubmit();
+		}
     }
 });
