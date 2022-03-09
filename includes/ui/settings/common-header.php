@@ -2,8 +2,9 @@
 	<head>
 		<?php wp_head(); ?>
 		<style type="text/css">
-		  html {
+		  html.wp-toolbar {
 		      margin-top: 0px !important;
+		      padding-top : 0px important;
 		  }
 		  .wp-submenu {
 		      margin-left: 0px !important;

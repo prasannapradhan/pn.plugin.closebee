@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
 	<?php wp_head(); ?>
+	<style type="text/css">
+    	  html.wp-toolbar {
+    	      margin-top: 0px !important;
+    	      padding-top : 0px important;
+    	  }
+    	  .wp-submenu {
+    	      margin-left: 0px !important;
+    	  }
+	</style>
 	<script>
     	var oc = '<?php echo esc_attr($org->code); ?>';
     	var pc = '<?php echo esc_attr($profile->code); ?>';
@@ -74,7 +83,7 @@
 	<body style="overflow-x:hidden;">
 		<div class="row w-100 m-0 p-2">
         	<div class="card-header bg-light w-100 mt-2" style="font-weight: bold;">
-        		Integrate Woocommerce with Closebee to manage orders in the backend
+        		Integrate Woocommerce with Closebee
         	</div>
         	<div class="card-body w-100 p-1 mt-1">
         		<div class="row w-100 m-0 mb-2 mt-1">
