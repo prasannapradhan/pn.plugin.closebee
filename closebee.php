@@ -265,7 +265,6 @@
         add_filter('woocommerce_checkout_coupon_message', 'closebee_checkout_coupon_message', 20, 1);
         add_filter('woocommerce_checkout_fields', 'closebee_checkout_fields');
         add_filter('woocommerce_enable_order_notes_field', '__return_false', 9999);
-        add_action('woocommerce_thankyou', 'closebee_thankyou', 10, 1);
         add_filter('woocommerce_thankyou_order_received_text', 'closebee_thankyou_order_received_text', 10, 2);
         add_action('woocommerce_order_status_changed', 'closebee_order_status_changed', 999, 4);
         add_filter('woocommerce_get_item_data', 'closebee_get_item_data' , 25, 2);
@@ -328,6 +327,7 @@
     }
     
     function closebee_thankyou($order_id) {
+        error_log("Closebee thank you called");
         $order = wc_get_order($order_id);
         if (!is_user_logged_in()){
             $order_email = $order->get_billing_email();
@@ -373,10 +373,13 @@
         $phone = $order->get_billing_phone();
         $calling_code = WC()->countries->get_country_calling_code($order->get_billing_country());
         $calling_code = is_array($calling_code) ? $calling_code[0] : $calling_code;
-        update_post_meta($order_id, '_billing_phone', $phone);
-        update_post_meta($order_id, '_billing_phone_cc', $calling_code);
         
-        if(trim($order->get_billing_address_1()) != ""){
+        error_log("Updating order meta data");
+        $order->update_meta_data($order_id, '_billing_phone', $phone);
+        $order->update_meta_data($order_id, '_billing_phone_cc', $calling_code);
+        
+        if(trim($order->get_shipping_address_1()) == ""){
+            error_log("Updating shipping from billing");
             $order->set_shipping_address_1($order->get_billing_address_1());
             $order->set_shipping_city($order->get_billing_city());
             $order->set_shipping_company($order->get_billing_company());
@@ -386,8 +389,8 @@
             $order->set_shipping_postcode($order->get_billing_postcode());
             $order->set_shipping_state($order->get_billing_state());
             $order->set_shipping_phone($order->get_billing_phone());
-            $order->save();
         }
+        $order->save();
     }
     
     function closebee_thankyou_order_received_text($str, $order) {
@@ -478,7 +481,9 @@
     
     function closebee_order_status_changed($order_id, $old_status, $new_status, $order){
         global $post_args;
+        error_log("Closebee order status changed");
         if($new_status == "processing"){
+            closebee_thankyou($order_id);
             $rdata = (object) array('surl' => get_site_url(), 'ch_order_id' => $order_id);
             if (is_user_logged_in()){
                 $rdata->wp_user = (object) wp_get_current_user();
@@ -492,7 +497,9 @@
             }
             $nb_post_args = $post_args;
             $nb_post_args['blocking'] = false;
-            $nb_post_args['body'] = json_encode($rdata);
+            $ojson = json_encode($rdata);
+            error_log("Calling update api with [$ojson]");
+            $nb_post_args['body'] = $ojson;
             wp_remote_post('https://api.pearnode.com/closebee/site/integ/woocommerce/order/created.php', $nb_post_args);
         }
     }
