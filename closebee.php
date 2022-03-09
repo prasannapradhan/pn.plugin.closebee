@@ -326,73 +326,6 @@
         return $fields;
     }
     
-    function closebee_thankyou($order_id) {
-        error_log("Closebee thank you called");
-        $order = wc_get_order($order_id);
-        if (!is_user_logged_in()){
-            $order_email = $order->get_billing_email();
-            $email = email_exists($order_email);
-            $user = username_exists($order_email);
-            if ($user == false && $email == false) {
-                $random_password = wp_generate_password();
-                $first_name = $order->get_billing_first_name();
-                $last_name = $order->get_billing_last_name();
-                $role = 'customer';
-                
-                $user_id = wp_insert_user(array('user_email' => $order_email, 'user_login' => $order_email,
-                    'user_pass' => $random_password, 'first_name' => $first_name, 'last_name' => $last_name,
-                    'role' => $role)
-                    );
-                
-                update_user_meta($user_id, 'billing_address_1', $order->get_billing_address_1());
-                update_user_meta($user_id, 'billing_city', $order->get_billing_city());
-                update_user_meta($user_id, 'billing_company', $order->get_billing_company());
-                update_user_meta($user_id, 'billing_country', $order->get_billing_country());
-                update_user_meta($user_id, 'billing_email', $order_email);
-                update_user_meta($user_id, 'billing_first_name', $order->get_billing_first_name());
-                update_user_meta($user_id, 'billing_last_name',  $order->get_billing_last_name());
-                update_user_meta($user_id, 'billing_phone', $order->get_billing_phone());
-                update_user_meta($user_id, 'billing_postcode', $order->get_billing_postcode());
-                update_user_meta($user_id, 'billing_state', $order->get_billing_state());
-                update_user_meta($user_id, 'shipping_address_1', $order->get_shipping_address_1());
-                update_user_meta($user_id, 'shipping_city', $order->get_shipping_city());
-                update_user_meta($user_id, 'shipping_company', $order->get_shipping_company());
-                update_user_meta($user_id, 'shipping_country', $order->get_shipping_country());
-                update_user_meta($user_id, 'shipping_first_name', $order->get_shipping_first_name());
-                update_user_meta($user_id, 'shipping_last_name', $order->get_shipping_last_name());
-                update_user_meta($user_id, 'shipping_method', $order->get_shipping_method());
-                update_user_meta($user_id, 'shipping_postcode', $order->get_shipping_postcode());
-                update_user_meta($user_id, 'shipping_state', $order->get_shipping_state());
-                
-                wc_update_new_customer_past_orders($user_id);
-                wp_set_current_user($user_id);
-                wp_set_auth_cookie($user_id);
-            }
-        }
-        
-        $phone = $order->get_billing_phone();
-        $calling_code = WC()->countries->get_country_calling_code($order->get_billing_country());
-        $calling_code = is_array($calling_code) ? $calling_code[0] : $calling_code;
-        
-        error_log("Updating order meta data");
-        $order->update_meta_data($order_id, '_billing_phone', $phone);
-        $order->update_meta_data($order_id, '_billing_phone_cc', $calling_code);
-        
-        if(trim($order->get_shipping_address_1()) == ""){
-            error_log("Updating shipping from billing");
-            $order->set_shipping_address_1($order->get_billing_address_1());
-            $order->set_shipping_city($order->get_billing_city());
-            $order->set_shipping_company($order->get_billing_company());
-            $order->set_shipping_country($order->get_billing_country());
-            $order->set_shipping_first_name($order->get_billing_first_name());
-            $order->set_shipping_last_name($order->get_billing_last_name());
-            $order->set_shipping_postcode($order->get_billing_postcode());
-            $order->set_shipping_state($order->get_billing_state());
-            $order->set_shipping_phone($order->get_billing_phone());
-        }
-        $order->save();
-    }
-    
     function closebee_thankyou_order_received_text($str, $order) {
         if (is_user_logged_in()) return $str;
         $order_email = $order->get_billing_email();
@@ -483,18 +416,8 @@
         global $post_args;
         error_log("Closebee order status changed");
         if($new_status == "processing"){
-            closebee_thankyou($order_id);
-            $rdata = (object) array('surl' => get_site_url(), 'ch_order_id' => $order_id);
-            if (is_user_logged_in()){
-                $rdata->wp_user = (object) wp_get_current_user();
-                $uid = get_current_user_id();
-                $phone = get_user_meta($uid,'phone_number',true);
-                if (!empty($phone)) {
-                    $rdata->wp_user->user_phone = $phone; 
-                } else {
-                    $rdata->wp_user->user_phone = '1234567890';
-                }
-            }
+            updateOrderWithMeta($order_id);
+            $rdata = (object) array('surl' => get_site_url(), 'ch_id' => $order_id);
             $nb_post_args = $post_args;
             $nb_post_args['blocking'] = false;
             $ojson = json_encode($rdata);
@@ -503,6 +426,63 @@
             wp_remote_post('https://api.pearnode.com/closebee/site/integ/woocommerce/order/created.php', $nb_post_args);
         }
     }
+    
+    function updateOrderWithMeta($order_id) {
+        $order = wc_get_order($order_id);
+        if (!is_user_logged_in()){
+            $order_email = $order->get_billing_email();
+            $email = email_exists($order_email);
+            $user = username_exists($order_email);
+            if ($user == false && $email == false) {
+                $random_password = wp_generate_password();
+                $first_name = $order->get_billing_first_name();
+                $last_name = $order->get_billing_last_name();
+                $role = 'customer';
+                
+                $user_id = wp_insert_user(array('user_email' => $order_email, 'user_login' => $order_email,
+                    'user_pass' => $random_password, 'first_name' => $first_name, 'last_name' => $last_name,
+                    'role' => $role)
+                    );
+                
+                update_user_meta($user_id, 'billing_address_1', $order->get_billing_address_1());
+                update_user_meta($user_id, 'billing_city', $order->get_billing_city());
+                update_user_meta($user_id, 'billing_company', $order->get_billing_company());
+                update_user_meta($user_id, 'billing_country', $order->get_billing_country());
+                update_user_meta($user_id, 'billing_email', $order_email);
+                update_user_meta($user_id, 'billing_first_name', $order->get_billing_first_name());
+                update_user_meta($user_id, 'billing_last_name',  $order->get_billing_last_name());
+                update_user_meta($user_id, 'billing_phone', $order->get_billing_phone());
+                update_user_meta($user_id, 'billing_postcode', $order->get_billing_postcode());
+                update_user_meta($user_id, 'billing_state', $order->get_billing_state());
+                update_user_meta($user_id, 'shipping_address_1', $order->get_shipping_address_1());
+                update_user_meta($user_id, 'shipping_city', $order->get_shipping_city());
+                update_user_meta($user_id, 'shipping_company', $order->get_shipping_company());
+                update_user_meta($user_id, 'shipping_country', $order->get_shipping_country());
+                update_user_meta($user_id, 'shipping_first_name', $order->get_shipping_first_name());
+                update_user_meta($user_id, 'shipping_last_name', $order->get_shipping_last_name());
+                update_user_meta($user_id, 'shipping_method', $order->get_shipping_method());
+                update_user_meta($user_id, 'shipping_postcode', $order->get_shipping_postcode());
+                update_user_meta($user_id, 'shipping_state', $order->get_shipping_state());
+                
+                wc_update_new_customer_past_orders($user_id);
+                wp_set_current_user($user_id);
+                wp_set_auth_cookie($user_id);
+            }
+        }
+        if(trim($order->get_shipping_address_1()) == ""){
+            $order->set_shipping_address_1($order->get_billing_address_1());
+            $order->set_shipping_city($order->get_billing_city());
+            $order->set_shipping_company($order->get_billing_company());
+            $order->set_shipping_country($order->get_billing_country());
+            $order->set_shipping_first_name($order->get_billing_first_name());
+            $order->set_shipping_last_name($order->get_billing_last_name());
+            $order->set_shipping_postcode($order->get_billing_postcode());
+            $order->set_shipping_state($order->get_billing_state());
+            $order->set_shipping_phone($order->get_billing_phone());
+        }
+        $order->save();
+    }
+    
     
     function closebee_do_admin_init(){
 		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
