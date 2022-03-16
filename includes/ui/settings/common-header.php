@@ -38,6 +38,14 @@
 		      				<div id="post_scan_result"><b>Waiting..</b></div>
 		      			</div>
 		      		</div>
+		      		<div class="row w-100 p-2 mb-2 mt-2 border-1 shadow-sm">
+		      			<div class="col-6">
+		      				<span>Scanning <b>Products</b></span>
+		      			</div>
+		      			<div class="col-6 d-flex justify-content-center">
+		      				<div id="product_scan_result"><b>Waiting..</b></div>
+		      			</div>
+		      		</div>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

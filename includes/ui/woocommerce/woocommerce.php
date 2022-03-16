@@ -38,31 +38,27 @@
 	    	$.post(postUrl, JSON.stringify(pdata), function(data) {
 				$('#modal_site_name').text(sname);
 				$('#scan_modal').modal('show');
-				var postUrl = "https://api.pearnode.com/closebee/site/scan/page_open.php"; 
+				var pdata = {'oc': oc,'pc': pc, 'sid' : sid};
+				var postUrl = "https://api.pearnode.com/closebee/site/scan/pages.php"; 
 				$('#page_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 			    $.post(postUrl, JSON.stringify(pdata), function(data) {
 			    	var robj = $.parseJSON(data);
-			    	var pgstatus = robj.status;
-			    	if(pgstatus.status == "success"){
-				    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-				    	postUrl = "https://api.pearnode.com/closebee/site/scan/post_open.php"; 
-						$('#post_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+			    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
+			    	postUrl = "https://api.pearnode.com/closebee/site/scan/post_open.php"; 
+					$('#post_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+				    $.post(postUrl, JSON.stringify(pdata), function(data) {
+				    	var robj = $.parseJSON(data);
+				    	$('#post_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
+				    	$('#product_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
 					    $.post(postUrl, JSON.stringify(pdata), function(data) {
 					    	var robj = $.parseJSON(data);
-					    	var psstatus = robj.status;
-					    	if(psstatus.status == "success"){
-						    	$('#post_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-						    	var postUrl = "https://api.pearnode.com/closebee/site/scan/woocommerce_update.php"; 
-						    	 $.post(postUrl, JSON.stringify(pdata), function(data) {
-			 					    submitNavigationForm('closebee-plugin-page-site');
-						    	 });
-					    	}else {
-					    		$('#post_scan_result').html("Error in scanning : <b style='color:red;'>" + pgstatus.code + "</b>");
-					    	}
-					    });
-			    	}else {
-			    		$('#page_scan_result').html("Error in scanning : <b style='color:red;'>" + pgstatus.code + "</b>");
-			    	}
+					    	$('#product_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
+					    	var postUrl = "https://api.pearnode.com/closebee/site/scan/update.php"; 
+					    	$.post(postUrl, JSON.stringify(pdata), function(data) {
+							    submitNavigationForm('closebee-plugin-page-site');
+					    	});
+					    }
+				    });
 			    });
 	    	});
 		    return false;
@@ -153,6 +149,14 @@
 		      			</div>
 		      			<div class="col-6 d-flex justify-content-center">
 		      				<div id="post_scan_result"><b>Waiting..</b></div>
+		      			</div>
+		      		</div>
+		      		<div class="row w-100 p-2 mb-2 mt-2 border-1 shadow-sm">
+		      			<div class="col-6">
+		      				<span>Scanning <b>Product</b></span>
+		      			</div>
+		      			<div class="col-6 d-flex justify-content-center">
+		      				<div id="product_scan_result"><b>Waiting..</b></div>
 		      			</div>
 		      		</div>
 		      </div>
