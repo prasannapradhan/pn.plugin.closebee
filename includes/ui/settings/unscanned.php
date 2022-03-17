@@ -1,19 +1,21 @@
 <script>
     function scanSite(){
+        var lhtml = '<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>';
 		$('#modal_site_name').text(sname);
 		$('#scan_modal').modal('show');
     	var pdata = {'oc': oc,'pc': pc, 'sid' : sid};
 		var postUrl = "https://api.pearnode.com/closebee/site/scan/pages.php"; 
-		$('#page_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+		$('#page_scan_result').html(lhtml);
 	    $.post(postUrl, JSON.stringify(pdata), function(data) {
 	    	var robj = $.parseJSON(data);
 	    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-	    	postUrl = "https://api.pearnode.com/closebee/site/scan/post_open.php"; 
-			$('#post_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+	    	postUrl = "https://api.pearnode.com/closebee/site/scan/posts.php"; 
+			$('#post_scan_result').html(lhtml);
 		    $.post(postUrl, JSON.stringify(pdata), function(data) {
 		    	var robj = $.parseJSON(data);
 		    	$('#post_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-		    	$('#product_scan_result').html('<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>');
+		    	postUrl = "https://api.pearnode.com/closebee/site/scan/products.php"; 
+		    	$('#product_scan_result').html(lhtml);
 			    $.post(postUrl, JSON.stringify(pdata), function(data) {
 			    	var robj = $.parseJSON(data);
 			    	$('#product_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
@@ -21,7 +23,7 @@
 			    	$.post(postUrl, JSON.stringify(pdata), function(data) {
 					    submitNavigationForm('closebee-plugin-page-site');
 			    	});
-			    }
+			    });
 		    });
 	    });
 	    return false;
