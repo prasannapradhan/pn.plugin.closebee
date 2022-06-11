@@ -449,6 +449,9 @@
         wp_enqueue_script('closebee-bootstrap', plugins_url('includes/assets/js/bootstrap-4.6.1.min.js', __FILE__));
         wp_enqueue_script('closebee-nprogress', plugins_url('includes/assets/js/nprogress.js', __FILE__));
         wp_enqueue_script('closebee-mustache', plugins_url('includes/assets/js/mustache.min.js', __FILE__));
+        wp_enqueue_script('closebee-currency-formatter', plugins_url('includes/assets/js/currency-formatter-2.0.0.min.js', __FILE__));
+        wp_enqueue_script('closebee-sweetalert', plugins_url('includes/assets/js/sweetalert-2.9.17.min.js', __FILE__));
+        wp_enqueue_script('closebee-commons-util', plugins_url('includes/assets/js/pearnode-commons-util.js', __FILE__));
     }
     
     function load_widget_dependencies(){

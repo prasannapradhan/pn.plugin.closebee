@@ -18,7 +18,7 @@
     	var sid = '<?php echo esc_attr($site->id); ?>';
     	var sname = '<?php echo esc_attr($site->site_name); ?>';
     	
-	 	function scanSite(){
+	 	function integrate(){
 	 		var lhtml = '<img src="<?php echo esc_attr(plugins_url()."/".$plugin_dir_name."/includes/assets/"); ?>images/loader-snake-blue.gif" style="width: 1.5vw;"/>';
 			var wcckey = $('#woocommerce_consumer_key').val().trim();
 			var wcsec = $('#woocommerce_consumer_secret').val().trim();
@@ -34,22 +34,13 @@
 			}else{
 				$('#woocommerce_consumer_secret').removeClass('is-invalid');
 			}
+			NProgress.start();
 			var pdata = {'oc': oc,'pc': pc, 'sid' : sid, 'woocommerce_consumer_key': wcckey, 'woocommerce_consumer_secret': wcsec};
 	    	var postUrl = "https://api.pearnode.com/closebee/site/plugin/woocommerce.php";
 	    	$.post(postUrl, JSON.stringify(pdata), function(data) {
-	    		submitNavigationForm('closebee-plugin-page-site');
+		    	NProgress.done();
+	    		showMessage('Congratulations !!', 'Your site Woocommerce is now integrated with Closebee commerce', 'success');
 	    	});
-		    return false;
-		}
-		
-		function submitNavigationForm(navslug){
-			var form = document.getElementById('navigation_form');
-			var hiddenField = document.createElement('input');
-		    hiddenField.type = 'hidden';
-		    hiddenField.name = 'navslug';
-		    hiddenField.value = navslug;
-		    form.appendChild(hiddenField);
-		    form.submit();
 		    return false;
 		}
 	</script>
@@ -97,7 +88,7 @@
         		</div>
         	</div>
         	<div class="card-footer w-100">
-        		<button class="btn btn-primary w-100" onclick="return scanSite();">
+        		<button class="btn btn-primary w-100" onclick="return integrate();">
         			<b>Start Integration</b>
         		</button>
         	</div>
