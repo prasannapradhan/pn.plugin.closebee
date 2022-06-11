@@ -13,6 +13,7 @@
     $user = (object) array();
     $billing_user = (object) array();
     $billing_address = (object) array();
+    
     $post_args = array(
         'timeout' => '5', 
         'redirection' => '5', 
@@ -206,12 +207,13 @@
         add_filter('woocommerce_add_cart_item_data', 'closebee_add_cart_item_data', 10, 3);
         add_action('woocommerce_before_checkout_form', 'closebee_before_checkout_form', 10, 1);
         add_filter('woocommerce_checkout_coupon_message', 'closebee_checkout_coupon_message', 20, 1);
-        add_filter('woocommerce_checkout_fields', 'closebee_checkout_fields');
+        add_filter('woocommerce_checkout_get_value', 'closebee_checkout_fields', 10, 2 );
         add_filter('woocommerce_enable_order_notes_field', '__return_false', 9999);
         add_filter('woocommerce_thankyou_order_received_text', 'closebee_thankyou_order_received_text', 10, 2);
         add_action('woocommerce_order_status_changed', 'closebee_order_status_changed', 999, 4);
         add_filter('woocommerce_get_item_data', 'closebee_get_item_data' , 25, 2);
         add_action('woocommerce_new_order_item', 'closebee_new_order_item', 10, 2);
+        add_filter('woocommerce_checkout_fields', 'closebee_set_checkout_field_input_value_default' );
     }
     
     function closebee_checkout_coupon_message($notice) {
@@ -220,52 +222,74 @@
     
     function closebee_before_checkout_form($wccm_autocreate_account) {
         global $billing_user, $billing_address;
-        if(isset($_GET['uck'])){
-            $uck = $_GET['uck'];
-            $rdata = array('ck' => $uck);
+        if(isset($_GET['uaid'])){
+            $uaid = $_GET['uaid'];
+            $rdata = array('uadid' => $uaid);
             $post_args['body'] = json_encode($rdata);
-            $out = wp_remote_post('https://api.pearnode.com/api/user/ckx.php', $post_args);
+            $out = wp_remote_post('https://api.pearnode.com/api/user/address/idx.php', $post_args);
+            $robj = (object) $out;
+            $body = $robj->body;
+            $billing_address = json_decode($body);
+            
+            $rdata = array('uid' => $billing_address->user_ref);
+            $post_args['body'] = json_encode($rdata);
+            $out = wp_remote_post('https://api.pearnode.com/api/user/idx.php', $post_args);
             $robj = (object) $out;
             $body = $robj->body;
             $billing_user = json_decode($body);
-            if(isset($_GET['uadc'])){
-                $uadc = $_GET['uadc'];
-                $rdata = array('code' => $uadc);
+        }else {
+            if(isset($_GET['uck'])){
+                $uck = $_GET['uck'];
+                $rdata = array('ck' => $uck);
                 $post_args['body'] = json_encode($rdata);
-                $out = wp_remote_post('https://api.pearnode.com/api/user/address/codex.php', $post_args);
+                $out = wp_remote_post('https://api.pearnode.com/api/user/ckx.php', $post_args);
                 $robj = (object) $out;
                 $body = $robj->body;
-                $billing_address = json_decode($body);
+                $billing_user = json_decode($body);
             }
         }
     }; 
     
-    function closebee_checkout_fields($fields) {
+    function closebee_checkout_fields( $value, $input = '') {
         global $billing_user, $billing_address;
-        unset($fields['billing']['billing_company']);
-        unset($fields['shipping']['shipping_company']);
-        unset($fields['order']['order_comments']);
-        if(isset($billing_address->code)){
-            $fields['billing']['billing_first_name']['default'] = $billing_address->first_name;
-            $fields['billing']['billing_last_name']['default'] = $billing_address->last_name;
-            $fields['billing']['billing_country']['default'] = $billing_address->country_name;
-            $fields['billing']['billing_address_1']['default'] = $billing_address->address_line1;
-            $fields['billing']['billing_city']['default'] = $billing_address->city;
-            $fields['billing']['billing_state']['default'] = $billing_address->state;
-            $fields['billing']['billing_postcode']['default'] = $billing_address->zip;
-            $fields['billing']['billing_phone']['default'] = $billing_address->mob;
-            $fields['billing']['billing_email']['default'] = $billing_address->email;
-            
-            $fields['shipping']['shipping_first_name']['default'] = $billing_address->first_name;
-            $fields['shipping']['shipping_last_name']['default'] = $billing_address->last_name;
-            $fields['shipping']['shipping_country']['default'] = $billing_address->country_name;
-            $fields['shipping']['shipping_address_1']['default'] = $billing_address->address_line1;
-            $fields['shipping']['shipping_city']['default'] = $billing_address->city;
-            $fields['shipping']['shipping_state']['default'] = $billing_address->state;
-            $fields['shipping']['shipping_postcode']['default'] = $billing_address->zip;
-            $fields['shipping']['shipping_phone']['default'] = $billing_address->mob;
-            $fields['shipping']['shipping_email']['default'] = $billing_address->email;
+        $checkout_fields = array(
+            'billing_first_name'    => $billing_address->first_name,
+            'billing_last_name'     => $billing_address->last_name,
+            'billing_country'       => $billing_address->country_code,
+            'billing_address_1'     => $billing_address->address_line1,
+            'billing_address_2'     => $billing_address->address_line2,
+            'billing_city'          => $billing_address->city,
+            'billing_state'         => $billing_address->state,
+            'billing_postcode'      => $billing_address->zip,
+            'billing_phone'         => $billing_address->mob,
+            'billing_email'         => $billing_address->email,
+            'shipping_first_name'   => $billing_address->first_name,
+            'shipping_last_name'    => $billing_address->last_name,
+            'shipping_country'      => $billing_address->country_code,
+            'shipping_address_1'    => $billing_address->address_line1,
+            'shipping_address_2'    => $billing_address->address_line2,
+            'shipping_city'         => $billing_address->city,
+            'shipping_state'        => $billing_address->state,
+            'shipping_postcode'     => $billing_address->zip,
+        );
+        
+        if(isset($checkout_fields[$input])){
+            if($input == "billing_state"){
+                $statemap = WC()->countries->get_states($billing_address->country_code);
+                foreach ($statemap as $skey => $svalue) {
+                    if($svalue == $billing_address->state){
+                        $value = $skey;
+                    }
+                }
+            }else {
+                $value = $checkout_fields[$input];
+            }
         }
+        return $value;
+        
+    }
+    
+    function closebee_set_checkout_field_input_value_default($fields){
         return $fields;
     }
     
@@ -463,7 +487,6 @@
     
     add_filter('rest_authentication_errors', 'closebee_json_basic_auth_error');
     add_filter('determine_current_user', 'closebee_json_basic_auth_handler', 20);
-    add_filter('the_content', 'closebee_parse_content', 25);
     add_action('admin_menu', 'closebee_do_admin_init');
     add_action('admin_post_closebee_registration_form', 'handle_submit_closebee_registration_form');
     add_action('admin_post_closebee_navigation_form', 'handle_submit_closebee_navigation_form');

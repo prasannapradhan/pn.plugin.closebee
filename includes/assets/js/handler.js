@@ -10,7 +10,6 @@ var ud = {'id' : -1};
 jQuery(document).ready(function() {
 	try{
 		initializeWidget();
-		loadUserDetails();
 		console.log("Widget handler loaded");
 		jQuery('#autofill_address').on("click", openUserAddressWidget);
 	}catch(e){
@@ -39,7 +38,7 @@ function initializeWidget(){
 
 function openUserAddressWidget() {
 	try {
-		var curl = "https://app.closebee.com/view/widget/_user.html";
+		var wurl = "https://app.closebee.com/view/widget/_user.html";
 		var fc = jQuery('#cb_user_address_frame');
 		if(fc.length != 0){
 			jQuery('#cb_user_address_frame').remove();
@@ -48,19 +47,18 @@ function openUserAddressWidget() {
 		var fw = wres.width;
 		var fh = wres.height;
 		if(wres.width > 500){
-			fw =  wres.width * 0.60;
-			fh =  wres.height * 0.80;
+			fw =  wres.width * 0.50;
+			fh =  wres.height * 0.70;
 		}
 		var rw =  (wres.width - fw)	/ 2;
-		var rh =  (wres.height - fh) / 2;		
 		var fhtml = '<iframe class="cb_address_widget_frame" id="cb_user_address_frame" ' 
-		+'allow="geolocation" src="https://app.closebee.com/view/widget/_user.html" style="border: 4px solid grey;border-radius:8px;"></iframe>';
+		+'allow="geolocation" src="' + wurl + '" style="border: 4px solid grey;border-radius:8px;"></iframe>';
 		
 		jQuery('body').first().append(fhtml);
 		jQuery('#cb_user_address_frame').css('height', fh + 'px');
 		jQuery('#cb_user_address_frame').css('z-index', maxz);
 		jQuery('#cb_user_address_frame').css('width', fw + 'px');
-		jQuery('#cb_user_address_frame').css('top', rh + 'px');
+		jQuery('#cb_user_address_frame').css('top', '0px');
 		jQuery('#cb_user_address_frame').css('left', rw + 'px');
 		jQuery('#cb_user_address_frame').css('position','fixed');
 		jQuery('#cb_user_address_frame').fadeIn(50);
@@ -87,25 +85,7 @@ function getReqParam(name){
 	 }
 }
 
-function loadUserDetails(){
- 	try {
- 		var udjson = sessionStorage.getItem('cb.app.user.details');
-		if ((typeof udjson !== 'undefined') && (udjson !== '') && (udjson !== null)) {
-			var udetails = $.parseJSON(udjson);
-			if((typeof udetails.login_id != "undefined") && (typeof udetails.id != "undefined")){
-				ud = udetails;
-			}else {
-				ud = {'id' : -1};
-			}
-		}else {
-			ud = {'id' : -1};
-		}
-	} catch (e) {
-		console.error("Error in loading user details");
-	}
-}
-
-function triggerInfoSubmit(uck, uadc){
+function triggerInfoSubmit(uck, uaid){
 	var url = new URL(site_url);
 	if(typeof uck != "undefined"){
 		if(url.searchParams.get('uck') === null){
@@ -113,11 +93,11 @@ function triggerInfoSubmit(uck, uadc){
 		}else {
 			url.searchParams.set('uck', uck);
 		}
-		if(typeof uadc != "undefined"){
-			if(url.searchParams.get('uadc') === null){
-				url.searchParams.append('uadc', uadc);
+		if(typeof uaid != "undefined"){
+			if(url.searchParams.get('uaid') === null){
+				url.searchParams.append('uaid', uaid);
 			}else {
-				url.searchParams.set('uadc', uadc);
+				url.searchParams.set('uaid', uaid);
 			}
 		}
 	}
@@ -134,9 +114,8 @@ window.addEventListener('message', function(event) {
 	    	var mdata = event.data;		
 			if(typeof mdata.data != "undefined"){
 				var uck = mdata.data.uck;
-				if(typeof mdata.data.uadc != "undefined"){
-					var uadc = mdata.data.uadc;
-	    			triggerInfoSubmit(uck, uadc);
+				if(typeof mdata.data.aid != "undefined"){
+	    			triggerInfoSubmit(uck, mdata.data.aid);
 				}else {
 					triggerInfoSubmit(uck);
 				}
