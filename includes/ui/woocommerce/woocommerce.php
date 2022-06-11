@@ -37,31 +37,7 @@
 			var pdata = {'oc': oc,'pc': pc, 'sid' : sid, 'woocommerce_consumer_key': wcckey, 'woocommerce_consumer_secret': wcsec};
 	    	var postUrl = "https://api.pearnode.com/closebee/site/plugin/woocommerce.php";
 	    	$.post(postUrl, JSON.stringify(pdata), function(data) {
-				$('#modal_site_name').text(sname);
-				$('#scan_modal').modal('show');
-				var pdata = {'oc': oc,'pc': pc, 'sid' : sid};
-				var postUrl = "https://api.pearnode.com/closebee/site/scan/pages.php"; 
-				$('#page_scan_result').html(lhtml);
-			    $.post(postUrl, JSON.stringify(pdata), function(data) {
-			    	var robj = $.parseJSON(data);
-			    	$('#page_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-			    	postUrl = "https://api.pearnode.com/closebee/site/scan/posts.php"; 
-					$('#post_scan_result').html(lhtml);
-				    $.post(postUrl, JSON.stringify(pdata), function(data) {
-				    	var robj = $.parseJSON(data);
-				    	$('#post_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-				    	postUrl = "https://api.pearnode.com/closebee/site/scan/products.php"; 
-				    	$('#product_scan_result').html(lhtml);
-					    $.post(postUrl, JSON.stringify(pdata), function(data) {
-					    	var robj = $.parseJSON(data);
-					    	$('#product_scan_result').html(robj.fetch_ctr + " found, " + robj.add_ctr + " added, " + robj.update_ctr + " updated");
-					    	var postUrl = "https://api.pearnode.com/closebee/site/scan/update.php"; 
-					    	$.post(postUrl, JSON.stringify(pdata), function(data) {
-							    submitNavigationForm('closebee-plugin-page-site');
-					    	});
-					    });
-				    });
-			    });
+	    		submitNavigationForm('closebee-plugin-page-site');
 	    	});
 		    return false;
 		}
@@ -126,48 +102,5 @@
         		</button>
         	</div>
 		</div>
-		
-		<div class="modal fade" id="scan_modal" tabindex="-1" role="dialog" aria-hidden="true">
-		  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h5 class="modal-title">Scanning <span id="modal_site_name" class="badge badge-info" style="font-size: 14px;"></span></h5>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          <span aria-hidden="true">&times;</span>
-		        </button>
-		      </div>
-		      <div class="modal-body">
-		      		<div class="row w-100 p-2 mb-2 mt-2 border-1 shadow-sm">
-		      			<div class="col-6">
-		      				<span>Scanning <b>Pages</b></span>
-		      			</div>
-		      			<div class="col-6 d-flex justify-content-center">
-		      				<div id="page_scan_result"><b>Waiting..</b></div>
-		      			</div>
-		      		</div>
-		      		<div class="row w-100 p-2 mb-2 mt-2 border-1 shadow-sm">
-		      			<div class="col-6">
-		      				<span>Scanning <b>Posts</b></span>
-		      			</div>
-		      			<div class="col-6 d-flex justify-content-center">
-		      				<div id="post_scan_result"><b>Waiting..</b></div>
-		      			</div>
-		      		</div>
-		      		<div class="row w-100 p-2 mb-2 mt-2 border-1 shadow-sm">
-		      			<div class="col-6">
-		      				<span>Scanning <b>Product</b></span>
-		      			</div>
-		      			<div class="col-6 d-flex justify-content-center">
-		      				<div id="product_scan_result"><b>Waiting..</b></div>
-		      			</div>
-		      		</div>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		
 	</body>
 </html>

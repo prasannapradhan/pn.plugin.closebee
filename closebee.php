@@ -62,7 +62,6 @@
         $dr = plugin_basename(__FILE__);
         $drarr = explode('/', $dr);
         $plugin_dir_name = $drarr[0];
-        error_log("Plugin directory [$plugin_dir_name]");
         ClosebeePluginActivator::activate(get_site_url());
     }
 
@@ -70,54 +69,6 @@
         ClosebeePluginDeactivator::deactivate(get_site_url());
     }
  
-    function closebee_footer_append() {
-        global $post_args;
-        global $wp_query;
-        $pgid = $wp_query->get_queried_object_id();
-        if($pgid){
-            $surl = get_site_url();
-            $rdata = array('surl' => $surl, 'pglink' => $pgid);
-            $post_args['body'] = json_encode($rdata);
-            $out = wp_remote_post('https://api.pearnode.com/closebee/site/plugin/widget_html_page.php', $post_args);
-            $robj = (object) $out;
-            $body = $robj->body;
-            if($body != ""){
-                echo $body;
-            }
-        }
-    }
-    
-    function closebee_parse_content($content){
-        global $post_args;
-        $sc = 'cbwidget';
-        $matches = array();
-        preg_match_all("/\[$sc(.+?)?\]/i", $content, $matches);
-        if(sizeof($matches) > 0){
-            $mbox = $matches[0];
-            foreach($mbox as $m){
-                $mx = str_replace("&#8221;", "\"", $m);
-                $mx = str_replace("&#8243;", "\"", $mx);
-                $mx = str_replace("&#8216;", "\"", $mx);
-                $mx = str_replace("&#8217;", "\"", $mx);
-                $widarr = array();
-                if (preg_match('/"([^"]+)"/', $mx, $widarr)) {
-                    $wid = $widarr[1];
-                    if($wid != "none"){
-                        $rdata = array('wid' => $wid);
-                        $post_args['body'] = json_encode($rdata);
-                        $out = wp_remote_post('https://api.pearnode.com/closebee/site/plugin/widget_html_id.php', $post_args);
-                        $robj = (object) $out;
-                        $body = $robj->body;
-                        if($body != ""){
-                            $content = str_replace($m, $body, $content);
-                        }
-                    }
-                }
-            }
-        }
-        return $content;
-    }
-    
     function closebee_plugin_settings() {
         global $post_args, $plugin_dir, $plugin_dir_name;
         global $org, $profile, $user, $cred_file;
@@ -168,15 +119,7 @@
         		}
         	</script>
 		    <?php 
-    		    if(!isset($site->config)){
-    		        $site->config = (object) array();
-    		    }
-    		    $sconfig = $site->config;
-    		    if(isset($sconfig->scanned) && ($sconfig->scanned)){
-    		        include($plugin_dir."includes/ui/settings/launch-app.php");
-		        }else {
-		            include($plugin_dir."includes/ui/settings/unscanned.php");
-		        }
+    		  include($plugin_dir."includes/ui/settings/launch-app.php");
         }else {
             include($plugin_dir."includes/ui/settings/attach-token.php");
         }
@@ -272,7 +215,7 @@
     }
     
     function closebee_checkout_coupon_message($notice) {
-        return "<a href='#' id='autofill_address'><b>Autofill your details with Google / Apple login</b></a>";
+        return "<a href='#' id='autofill_address'><b>Login with <i class='fa-brands fa-google'></i> Google / <i class='fa-brands fa-apple'></i> Apple</b></a>";
     }; 
     
     function closebee_before_checkout_form($wccm_autocreate_account) {
@@ -397,10 +340,10 @@
         $cdata = (object) $cart_item_data;
         if (isset($cdata->legacy_values)){
             $lv = (object) $cdata->legacy_values;
-            $soid = $lv->soid;
-            $ch_id = $lv->product_id;
-            wc_add_order_item_meta($item_id, '_soid', $soid);
-            wc_add_order_item_meta($item_id, '_ch_id', $ch_id);
+            if(isset($lv->soid)){
+                $soid = $lv->soid;
+                wc_add_order_item_meta($item_id, '_soid', $soid);
+            }
             if(isset($lv->uid)){
                 wc_add_order_item_meta($item_id, '_uid', $lv->uid);
             }

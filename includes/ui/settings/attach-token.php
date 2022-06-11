@@ -36,7 +36,7 @@
 		<input type='hidden' name='action' value='closebee_registration_form' />
 	</div>
 	<div class="card-footer w-100">
-		<button class="btn btn-primary w-100" type="submit">
+		<button class="btn bg-primary w-100" type="submit">
 			<b>Start Integration</b>
 		</button>
 	</div>

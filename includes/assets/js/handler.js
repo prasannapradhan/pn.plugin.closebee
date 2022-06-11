@@ -45,8 +45,12 @@ function openUserAddressWidget() {
 			jQuery('#cb_user_address_frame').remove();
 		}
 		wres = getWindowResolution();
-		var fw =  wres.width * 0.40;
-		var fh =  wres.height * 0.70;
+		var fw = wres.width;
+		var fh = wres.height;
+		if(wres.width > 500){
+			fw =  wres.width * 0.60;
+			fh =  wres.height * 0.80;
+		}
 		var rw =  (wres.width - fw)	/ 2;
 		var rh =  (wres.height - fh) / 2;		
 		var fhtml = '<iframe class="cb_address_widget_frame" id="cb_user_address_frame" ' 
