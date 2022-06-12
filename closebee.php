@@ -217,7 +217,7 @@
     }
     
     function closebee_checkout_coupon_message($notice) {
-        return "<a href='#' id='autofill_address'><b>Login with <i class='fa-brands fa-google'></i> Google / <i class='fa-brands fa-apple'></i> Apple</b></a>";
+        return "<a href='#' id='autofill_address'><b>Autofill address with Google / Apple</b></a>";
     }; 
     
     function closebee_before_checkout_form($wccm_autocreate_account) {
@@ -353,14 +353,13 @@
                 $cart_item_data['uid'] = $billing_user->id;
             }
             if(isset($billing_address->id)){
-                $cart_item_data['uadid'] = $billing_address->id;
+                $cart_item_data['uaid'] = $billing_address->id;
             }
         }
         return $cart_item_data;
     }
     
     function closebee_new_order_item($item_id, $cart_item_data) {
-        error_log("Cart item data [".json_encode($cart_item_data)."]");
         $cdata = (object) $cart_item_data;
         if (isset($cdata->legacy_values)){
             $lv = (object) $cdata->legacy_values;
@@ -381,14 +380,12 @@
     
     function closebee_order_status_changed($order_id, $old_status, $new_status, $order){
         global $post_args;
-        error_log("Closebee order status changed");
         if($new_status == "processing"){
             updateOrderWithMeta($order_id);
             $rdata = (object) array('surl' => get_site_url(), 'ch_id' => $order_id);
             $nb_post_args = $post_args;
             $nb_post_args['blocking'] = false;
             $ojson = json_encode($rdata);
-            error_log("Calling update api with [$ojson]");
             $nb_post_args['body'] = $ojson;
             wp_remote_post('https://api.pearnode.com/closebee/site/integ/woocommerce/order/created.php', $nb_post_args);
         }
