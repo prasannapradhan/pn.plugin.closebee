@@ -58,7 +58,7 @@ function openUserAddressWidget() {
 		jQuery('#cb_user_address_frame').css('height', fh + 'px');
 		jQuery('#cb_user_address_frame').css('z-index', maxz);
 		jQuery('#cb_user_address_frame').css('width', fw + 'px');
-		jQuery('#cb_user_address_frame').css('top', '0px');
+		jQuery('#cb_user_address_frame').css('top', '10px');
 		jQuery('#cb_user_address_frame').css('left', rw + 'px');
 		jQuery('#cb_user_address_frame').css('position','fixed');
 		jQuery('#cb_user_address_frame').fadeIn(50);
@@ -101,8 +101,11 @@ function triggerInfoSubmit(uck, uaid){
 			}
 		}
 	}
-	window.location.href = url;
-	jQuery('#cb_user_address_frame_container').fadeOut(500);
+	var urlstr = url.href;
+	if(urlstr.indexOf('#') == urlstr.length -1){
+		urlstr = urlstr.substr(0, urlstr.length -1);
+	}
+	window.location.href = urlstr;
 }
 
 window.addEventListener('message', function(event) {

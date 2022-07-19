@@ -8,12 +8,9 @@
      * Plugin URI: https://closebee.com
      */
     
-    $org = (object) array();
-    $profile = (object) array();
-    $user = (object) array();
+    global $org, $profile, $user, $billing_user, $billing_address, $post_args;
     $billing_user = (object) array();
     $billing_address = (object) array();
-    
     $post_args = array(
         'timeout' => '5', 
         'redirection' => '5', 
@@ -23,7 +20,7 @@
         'cookies' => array(),
         'method'  => 'POST',
         'data_format' => 'body'
-   );
+    );
     
     $plugin_dir = plugin_dir_path( __FILE__);
     $plugin_dir_name = "";
@@ -134,7 +131,7 @@
         add_action('wp_enqueue_scripts', "load_script_dependencies");
         if(isset($_POST['authtoken'])){
             $token = $_POST['authtoken'];
-            $ddata = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $token)[1]))));
+            $ddata = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+', explode('.', $token)[1]))));
             $rdata = array('oc' => $ddata->oc, 'pc' => $ddata->pc, 'uck' => $ddata->uck);
             $post_args['body'] = json_encode($rdata);
             $out = wp_remote_post('https://api.pearnode.com/extn/org/bizdetails.php', $post_args);
@@ -217,7 +214,7 @@
     }
     
     function closebee_checkout_coupon_message($notice) {
-        return "<a href='#' id='autofill_address'><b>Autofill address with Google / Apple</b></a>";
+        return "<a href='#' id='autofill_address'><b>Choose from Address Registry</b></a>";
     }; 
     
     function closebee_before_checkout_form($wccm_autocreate_account) {
@@ -230,6 +227,7 @@
             $robj = (object) $out;
             $body = $robj->body;
             $billing_address = json_decode($body);
+            $_SESSION['uaid'] = $billing_address->id;
             
             $rdata = array('uid' => $billing_address->user_ref);
             $post_args['body'] = json_encode($rdata);
@@ -237,6 +235,8 @@
             $robj = (object) $out;
             $body = $robj->body;
             $billing_user = json_decode($body);
+            $_SESSION['uid'] = $billing_user->id;
+            $_SESSION['ulid'] = $billing_user->login_id;
         }else {
             if(isset($_GET['uck'])){
                 $uck = $_GET['uck'];
@@ -252,44 +252,45 @@
     
     function closebee_checkout_fields( $value, $input = '') {
         global $billing_user, $billing_address;
-        $checkout_fields = array(
-            'billing_first_name'    => $billing_address->first_name,
-            'billing_last_name'     => $billing_address->last_name,
-            'billing_country'       => $billing_address->country_code,
-            'billing_address_1'     => $billing_address->address_line1,
-            'billing_address_2'     => $billing_address->address_line2,
-            'billing_city'          => $billing_address->city,
-            'billing_state'         => $billing_address->state,
-            'billing_postcode'      => $billing_address->zip,
-            'billing_phone'         => $billing_address->mob,
-            'billing_email'         => $billing_address->email,
-            'shipping_first_name'   => $billing_address->first_name,
-            'shipping_last_name'    => $billing_address->last_name,
-            'shipping_country'      => $billing_address->country_code,
-            'shipping_address_1'    => $billing_address->address_line1,
-            'shipping_address_2'    => $billing_address->address_line2,
-            'shipping_city'         => $billing_address->city,
-            'shipping_state'        => $billing_address->state,
-            'shipping_postcode'     => $billing_address->zip,
-        );
-        
-        if(isset($checkout_fields[$input])){
-            if($input == "billing_state"){
-                $statemap = WC()->countries->get_states($billing_address->country_code);
-                foreach ($statemap as $skey => $svalue) {
-                    if($svalue == $billing_address->state){
-                        $value = $skey;
+        if(isset($billing_address->id)){
+            $checkout_fields = array(
+                'billing_first_name'    => $billing_address->first_name,
+                'billing_last_name'     => $billing_address->last_name,
+                'billing_country'       => $billing_address->country_code,
+                'billing_address_1'     => $billing_address->address_line1,
+                'billing_address_2'     => $billing_address->address_line2,
+                'billing_city'          => $billing_address->city,
+                'billing_state'         => $billing_address->state,
+                'billing_postcode'      => $billing_address->zip,
+                'billing_phone'         => $billing_address->mob,
+                'billing_email'         => $billing_address->email,
+                'shipping_first_name'   => $billing_address->first_name,
+                'shipping_last_name'    => $billing_address->last_name,
+                'shipping_country'      => $billing_address->country_code,
+                'shipping_address_1'    => $billing_address->address_line1,
+                'shipping_address_2'    => $billing_address->address_line2,
+                'shipping_city'         => $billing_address->city,
+                'shipping_state'        => $billing_address->state,
+                'shipping_postcode'     => $billing_address->zip,
+            );
+            if(isset($checkout_fields[$input])){
+                if($input == "billing_state"){
+                    $statemap = WC()->countries->get_states($billing_address->country_code);
+                    foreach ($statemap as $skey => $svalue) {
+                        if($svalue == $billing_address->state){
+                            $value = $skey;
+                        }
                     }
+                }else {
+                    $value = $checkout_fields[$input];
                 }
-            }else {
-                $value = $checkout_fields[$input];
             }
         }
         return $value;
-        
     }
     
     function closebee_set_checkout_field_input_value_default($fields){
+        unset($fields['billing']['billing_company']);
         return $fields;
     }
     
@@ -345,16 +346,9 @@
     }
     
     function closebee_add_cart_item_data($cart_item_data, $product_id, $variation_id) {
-        global $billing_user, $billing_address;        
         if(!empty($_POST['seller_select'])) {
             $soid = $_POST['seller_select'];
             $cart_item_data['soid'] = $soid;
-            if(isset($billing_user->id)){
-                $cart_item_data['uid'] = $billing_user->id;
-            }
-            if(isset($billing_address->id)){
-                $cart_item_data['uaid'] = $billing_address->id;
-            }
         }
         return $cart_item_data;
     }
@@ -367,22 +361,17 @@
                 $soid = $lv->soid;
                 wc_add_order_item_meta($item_id, '_soid', $soid);
             }
-            if(isset($lv->uid)){
-                wc_add_order_item_meta($item_id, '_uid', $lv->uid);
-            }
-            if(isset($lv->uadid)){
-                wc_add_order_item_meta($item_id, '_uadid', $lv->uadid);
-            }
         }else {
             error_log("cart item data does not contain soid. Ignoring.");
         }
     }
     
     function closebee_order_status_changed($order_id, $old_status, $new_status, $order){
-        global $post_args;
+        global $post_args, $billing_user, $billing_address;
+        global $org, $profile;
         if($new_status == "processing"){
             updateOrderWithMeta($order_id);
-            $rdata = (object) array('surl' => get_site_url(), 'ch_id' => $order_id);
+            $rdata = (object) array('surl' => get_site_url(), 'ch_odid' => $order_id, 'uid' => $billing_user->id, 'uaid' => $billing_address->id);
             $nb_post_args = $post_args;
             $nb_post_args['blocking'] = false;
             $ojson = json_encode($rdata);
@@ -392,46 +381,102 @@
     }
     
     function updateOrderWithMeta($order_id) {
+        global $billing_user, $billing_address;
+        global $post_args, $plugin_dir, $plugin_dir_name;
+        global $org, $profile, $user, $cred_file;
+        $uobj = (object) array('subs_type', 'open');
+        $uai = (object) array();
+        
+        $uid = -1;
+        $ulid = "";
+        if(isset($_SESSION['uid'])){
+            $uid = $_SESSION['uid'];
+            $ulid = $_SESSION['ulid'];
+            $uobj->id = $uid;
+        }
+        $billing_user->id = $uid;
+        
+        $uaid = -1;
+        if(isset($_SESSION['uaid'])){
+            $uaid = $_SESSION['uaid'];
+            $uai->id = $uaid;
+        }
+        $billing_address->id = $uaid;
+        
         $order = wc_get_order($order_id);
+        $user_email = "";
+        if($uid != -1){
+            $user_email = $ulid;
+        }else {
+            $user_email = $order->get_billing_email();
+        }
         if (!is_user_logged_in()){
-            $order_email = $order->get_billing_email();
-            $email = email_exists($order_email);
-            $user = username_exists($order_email);
+            $uobj->login_id = $user_email;
+            $email = email_exists($user_email);
+            $user = username_exists($user_email);
             if ($user == false && $email == false) {
                 $random_password = wp_generate_password();
                 $first_name = $order->get_billing_first_name();
                 $last_name = $order->get_billing_last_name();
                 $role = 'customer';
                 
-                $user_id = wp_insert_user(array('user_email' => $order_email, 'user_login' => $order_email,
+                $userx = wp_insert_user(array('user_email' => $user_email, 'user_login' => $user_email,
                     'user_pass' => $random_password, 'first_name' => $first_name, 'last_name' => $last_name,
-                    'role' => $role)
-                    );
+                    'role' => $role));
                 
-                update_user_meta($user_id, 'billing_address_1', $order->get_billing_address_1());
-                update_user_meta($user_id, 'billing_city', $order->get_billing_city());
-                update_user_meta($user_id, 'billing_company', $order->get_billing_company());
-                update_user_meta($user_id, 'billing_country', $order->get_billing_country());
-                update_user_meta($user_id, 'billing_email', $order_email);
-                update_user_meta($user_id, 'billing_first_name', $order->get_billing_first_name());
-                update_user_meta($user_id, 'billing_last_name',  $order->get_billing_last_name());
-                update_user_meta($user_id, 'billing_phone', $order->get_billing_phone());
-                update_user_meta($user_id, 'billing_postcode', $order->get_billing_postcode());
-                update_user_meta($user_id, 'billing_state', $order->get_billing_state());
-                update_user_meta($user_id, 'shipping_address_1', $order->get_shipping_address_1());
-                update_user_meta($user_id, 'shipping_city', $order->get_shipping_city());
-                update_user_meta($user_id, 'shipping_company', $order->get_shipping_company());
-                update_user_meta($user_id, 'shipping_country', $order->get_shipping_country());
-                update_user_meta($user_id, 'shipping_first_name', $order->get_shipping_first_name());
-                update_user_meta($user_id, 'shipping_last_name', $order->get_shipping_last_name());
-                update_user_meta($user_id, 'shipping_method', $order->get_shipping_method());
-                update_user_meta($user_id, 'shipping_postcode', $order->get_shipping_postcode());
-                update_user_meta($user_id, 'shipping_state', $order->get_shipping_state());
+                $uobj->full_name = $first_name." ".$last_name;
+                $uobj->mobile_no = $order->get_billing_phone();
+                $uobj->password = $random_password;
                 
-                wc_update_new_customer_past_orders($user_id);
-                wp_set_current_user($user_id);
-                wp_set_auth_cookie($user_id);
+                $uai->address_line1 = $order->get_billing_address_1();
+                $uai->address_line2 = $order->get_billing_address_2();
+                if(!trim($uai->address_line2) == ""){
+                    $uai->address = $uai->address_line1." , ".$uai->address_line2;
+                }else {
+                    $uai->address = $uai->address_line1;
+                }
+                $uai->city = $order->get_billing_city();
+                $uai->country_name = $order->get_billing_country();
+                $uai->country = $order->get_billing_country();
+                $uai->zip = $order->get_billing_postcode();
+                $uai->state_name = $order->get_billing_state();
+                $uai->state = $order->get_billing_state();
+                
+                update_user_meta($userx, 'billing_address_1', $uai->address_line1);
+                update_user_meta($userx, 'billing_city', $uai->city);
+                update_user_meta($userx, 'billing_company', $order->get_billing_company());
+                update_user_meta($userx, 'billing_country', $uai->country);
+                update_user_meta($userx, 'billing_email', $order->get_billing_email());
+                update_user_meta($userx, 'billing_first_name', $first_name);
+                update_user_meta($userx, 'billing_last_name',  $last_name);
+                update_user_meta($userx, 'billing_phone', $uobj->mobile_no);
+                update_user_meta($userx, 'billing_postcode', $uai->zip);
+                update_user_meta($userx, 'billing_state', $uai->state);
+                
+                update_user_meta($userx, 'shipping_address_1', $order->get_shipping_address_1());
+                update_user_meta($userx, 'shipping_city', $order->get_shipping_city());
+                update_user_meta($userx, 'shipping_company', $order->get_shipping_company());
+                update_user_meta($userx, 'shipping_country', $order->get_shipping_country());
+                update_user_meta($userx, 'shipping_first_name', $order->get_shipping_first_name());
+                update_user_meta($userx, 'shipping_last_name', $order->get_shipping_last_name());
+                update_user_meta($userx, 'shipping_method', $order->get_shipping_method());
+                update_user_meta($userx, 'shipping_postcode', $order->get_shipping_postcode());
+                update_user_meta($userx, 'shipping_state', $order->get_shipping_state());
+                
+                wc_update_new_customer_past_orders($userx);
+                wp_set_current_user($userx);
+                wp_set_auth_cookie($userx);
+            }else {
+                $user = get_user_by('email', $user_email);
+                $uobj->login_id = $user_email;
+                $uobj->full_name = $user->user_firstname." ".$user->user_lastname;
+                $uobj->mobile_no = get_user_meta($user->ID, 'user_phone' , true);
             }
+        }else {
+            $cuser = (object) wp_get_current_user();
+            $uobj->login_id = $cuser->user_email;
+            $uobj->full_name =  $cuser->user_firstname." ".$cuser->user_lastname ;
+            $uobj->mobile_no = get_user_meta($cuser->ID,'user_phone',true);
         }
         if(trim($order->get_shipping_address_1()) == ""){
             $order->set_shipping_address_1($order->get_billing_address_1());
@@ -445,11 +490,39 @@
             $order->set_shipping_phone($order->get_billing_phone());
         }
         $order->save();
+
+        if($billing_user->id == -1){
+            $uobj->ai = $uai;
+            $rdata = (object) array('user' => $uobj);
+            $nb_post_args = $post_args;
+            $nb_post_args['blocking'] = true;
+            $ojson = json_encode($rdata);
+            $nb_post_args['body'] = $ojson;
+            $out = wp_remote_post('https://api.pearnode.com/api/user/self/createxy.php', $nb_post_args);
+            $robj = (object) $out;
+            error_log("User create details [".json_encode($robj)."]");
+            $body = $robj->body;
+            $billing_user = json_decode($body);
+            $billing_address = $billing_user->ai;
+            unset($billing_user->ai);
+        }else {
+            $rdata = (object) array('id' => $billing_user->id, 'aid' => $billing_address->id);
+            $nb_post_args = $post_args;
+            $nb_post_args['blocking'] = true;
+            $ojson = json_encode($rdata);
+            $nb_post_args['body'] = $ojson;
+            $out = wp_remote_post('https://api.pearnode.com/api/user/self/details_id.php', $nb_post_args);
+            $robj = (object) $out;
+            error_log("User load details [".json_encode($robj)."]");
+            $body = $robj->body;
+            $billing_user = json_decode($body);
+            $billing_address = $billing_user->ai;
+            unset($billing_user->ai);
+        }
     }
     
-    
     function closebee_do_admin_init(){
-		add_menu_page('Closebee', 'Closebee Beta', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
+		add_menu_page('Closebee', 'Closebee', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings', 'dashicons-superhero', 5);
 		add_submenu_page('closebee-plugin-settings', 'Closebee Settings', 'Settings', 'manage_options', 'closebee-plugin-settings', 'closebee_plugin_settings');
 		add_submenu_page('closebee-plugin-settings', 'Closebee Plugin Woocommerce', 'Woo Config', 'manage_options', 'closebee-plugin-page-woocommerce', 
 		    'closebee_plugin_page_woocommerce');
@@ -488,9 +561,16 @@
     add_action('admin_post_closebee_registration_form', 'handle_submit_closebee_registration_form');
     add_action('admin_post_closebee_navigation_form', 'handle_submit_closebee_navigation_form');
     add_action('woocommerce_init', 'action_woocommerce_init', 10, 1); 
+    add_action('init', 'register_my_session');
     
     add_action('in_admin_header', function () {
         remove_all_actions('admin_notices');
         remove_all_actions('all_admin_notices');
     }, 1000);
+    
+    function register_my_session(){
+        if(!session_id() ) {
+            session_start();
+        }
+    }
      
