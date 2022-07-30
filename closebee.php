@@ -557,6 +557,7 @@
     
     add_filter('rest_authentication_errors', 'closebee_json_basic_auth_error');
     add_filter('determine_current_user', 'closebee_json_basic_auth_handler', 20);
+	add_filter('woocommerce_rest_allowed_image_mime_types', 'closebee_more_mimes_to_exts');
     add_action('admin_menu', 'closebee_do_admin_init');
     add_action('admin_post_closebee_registration_form', 'handle_submit_closebee_registration_form');
     add_action('admin_post_closebee_navigation_form', 'handle_submit_closebee_navigation_form');
@@ -568,6 +569,11 @@
         remove_all_actions('all_admin_notices');
     }, 1000);
     
+	function closebee_more_mimes_to_exts($mime_to_ext){
+		$mime_to_ext['webp'] = 'image/webp';
+		return $mime_to_ext;
+	}
+
     function register_my_session(){
         if(!session_id() ) {
             session_start();
